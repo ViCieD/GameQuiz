@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz Game</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    #game-container {
+      background: url('fondo.jpg') no-repeat center top;
+      background-size: contain;
+      width: 95vw;
+      max-width: 430px;
+      aspect-ratio: 9 / 16;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 31vh 1em 2em 1em;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+
+    .question-box {
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 16px;
+      padding: 1.2em;
+      margin-bottom: 1em;
+    }
+
+    button {
+      background: #b52b81;
+      border: none;
+      color: white;
+      padding: 0.6em 1em;
+      margin: 0.4em auto;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      font-size: 0.95em;
+      width: 90%;
+      max-width: 280px;
+      display: block;
+    }
+
+    button:hover {
+      background: #912162;
+      transform: scale(1.03);
+    }
+
+    #score {
+      font-size: 1em;
+      margin-top: 1em;
+      text-align: center;
+    }
+
+    #name-form {
+      margin-top: 4vh; /* Empuja el input y botón más abajo */
+      margin-bottom: 1em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #question {
+      text-align: center;
+    }
+
+    input[type="text"] {
+      padding: 0.6em;
+      font-size: 0.95em;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      width: 90%;
+      max-width: 280px;
+      margin-bottom: 1em;
+      text-align: center;
+    }
+
+    @media (min-width: 600px) {
+      button {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <form id="name-form">
+      <input type="text" id="username" placeholder="Introduce tu nombre" required />
+      <button type="submit">Comenzar</button>
+    </form>
+
+    <div class="question-box" id="quiz-box" style="display: none">
+      <p id="question"></p>
+      <div id="answers"></div>
+    </div>
+
+    <div id="score"></div>
+  </div>
+
+  <script>
+    const quiz = [
+      {
+        q: "¿Cuál de estas no es una consola de videojuegos?",
+        a: ["PlayStation", "Xbox", "Nintendo", "Blu-ray"]
+      },
+      {
+        q: "¿En qué año se fundó GAME?",
+        a: ["1992", "2000", "2010", "1987"]
+      },
+      {
+        q: "¿Qué hace GIA en esta convención?",
+        a: ["Presenta", "Sirve café", "Juega a la consola", "Canta"]
+      },
+      {
+        q: "¿Qué significa GIA?",
+        a: ["Game Intelligence Assistant", "Grupo Inteligente de Ayuda", "Gran Inteligencia Artificial", "Guía Interactiva Autónoma"]
+      }
+    ];
+
+    const correct = [3, 0, 0, 0];
+    let current = 0;
+    let score = 0;
+    let userName = "";
+
+    document.getElementById("name-form").onsubmit = function(e) {
+      e.preventDefault();
+      userName = document.getElementById("username").value;
+      if (userName.trim() !== "") {
+        document.getElementById("name-form").style.display = "none";
+        document.getElementById("quiz-box").style.display = "block";
+        showQuestion();
+      }
+    };
+
+    function showQuestion() {
+      const q = quiz[current];
+      document.getElementById("question").textContent = q.q;
+      const answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = "";
+      q.a.forEach((ans, idx) => {
+        const btn = document.createElement("button");
+        btn.textContent = ans;
+        btn.onclick = () => checkAnswer(idx);
+        answersDiv.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(index) {
+      if (index === correct[current]) score++;
+      current++;
+      if (current < quiz.length) {
+        showQuestion();
+      } else {
+        document.getElementById("quiz-box").innerHTML =
+          "<h2 style='text-align: center;'>¡Juego terminado!</h2><p style='text-align: center;'>Tu puntuación: " + score + " de " + quiz.length + "</p>";
+      }
+    }
+  </script>
+</body>
+</html>
+
